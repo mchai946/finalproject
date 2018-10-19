@@ -7,7 +7,16 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-data <- x
+data 
 ```
 
+<h5> I plan to use data that I found on the Harvard Dataverse. The data was used in a study entitled
+"Gender Stereotypes in the Classroom and Effects on Achievement." The data has 104 variables, since a lot of the
+values in the cells correspond to answers to a survey. The data takes its answer from teachers and students
+in the 3rd and 4th grade, and asks thought-provoking questions about gender in respsect to education, parents, 
+and gender stereotypes. I am excited to see what I will be able to do with the data! </h5>
 
+<h5> Aside: I wanted to do my final project on the gender gap among the faculty in higher education - compare
+the number of Harvard female professors to Yale female professors, Princeton, Columbia etc. but couldn't
+find any good data! If you have any suggestions for where / how to find good data for this, please let me
+know. 
