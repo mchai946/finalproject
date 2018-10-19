@@ -1,0 +1,13 @@
+---
+title: "Gender Stereotypes in the Classroom and How They Affect Achievement"
+author: "Maddie Chai"
+date: "10/18/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+data <- x
+```
+
+
