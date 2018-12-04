@@ -1,5 +1,5 @@
 ---
-title: "Gender Stereotypes in the Classroom and How They Affect Achievement"
+title: "Marraige Trends: 1960 - 2012"
 author: "Maddie Chai"
 date: "10/18/2018"
 output: html_document
@@ -7,16 +7,180 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-data 
+require(RCurl)
+library(tidyverse)
+library(ggplot2)
+library(janitor)
+library(dplyr)
+library(readr)
+data <- read.csv(text=getURL("https://raw.githubusercontent.com/fivethirtyeight/data/master/marriage/both_sexes.csv")) %>% clean_names()
 ```
 
-<h5> I plan to use data that I found on the Harvard Dataverse. The data was used in a study entitled
-"Gender Stereotypes in the Classroom and Effects on Achievement." The data has 104 variables, since a lot of the
-values in the cells correspond to answers to a survey. The data takes its answer from teachers and students
-in the 3rd and 4th grade, and asks thought-provoking questions about gender in respsect to education, parents, 
-and gender stereotypes. I am excited to see what I will be able to do with the data! </h5>
+```{r}
+young <- data %>%
+  select(x:rich_2534)
 
-<h5> Aside: I wanted to do my final project on the gender gap among the faculty in higher education - compare
-the number of Harvard female professors to Yale female professors, Princeton, Columbia etc. but couldn't
-find any good data! If you have any suggestions for where / how to find good data for this, please let me
-know. 
+  #Taking only the variables the concern the 25-34 age demographic
+
+education_young <- young %>%
+  select(year, hs_2534:b_ap_2534) %>%
+  rename(highschool = hs_2534,
+         some_college = sc_2534,
+         college_grad = b_ap_2534) %>%
+  mutate(highschool = highschool*100, some_college = some_college*100, college_grad = college_grad*100) 
+
+ggplot(education_young, aes(x = year, y = 100-highschool)) +          #High school or less
+  geom_line(size = 1.25, aes(color = "High School or Less")) +
+  geom_line(aes(y = 100-some_college, color = "Some College"), size = 1.25) +    #Some college
+  geom_line(aes(y = 100-college_grad, color = "College Graduate or More"), size = 1.25) +    #College grad or more
+  ylab("Share of Population that Has Ever Been Married") +
+  xlab("Year") +
+  scale_color_manual(values = c("High School or Less" = "#a167f7", 
+                                "Some College" = "#4741f4", 
+                                "College Graduate or More" = "#429ef4"),
+                     breaks = c("High School or Less", "Some College", "College Graduate or More")) +
+  theme_minimal() +
+  labs(color = "Education") 
+```
+
+```{r}
+race_young <- young %>%
+  select(year, white_2534:hisp_2534) %>%
+  rename(white = white_2534,
+         black = black_2534,
+         hispanic = hisp_2534) %>%
+  mutate(white = white*100, black = black*100, hispanic = hispanic*100)
+
+ggplot(race_young, aes(x = year, y = 100-white)) +          #Whites
+  geom_line(size = 1.25, aes(color = "White")) +
+  geom_line(aes(y = 100-black, color = "Black"), size = 1.25) +    #Blacks
+  geom_line(aes(y = 100-hispanic, color = "Hispanic"), size = 1.25) +    #Hispanics
+  ylab("Share of Population that Has Ever Been Married") +
+  xlab("Year") +
+  scale_color_manual(values = c("White" = "#eeac99", 
+                                "Black" = "#c83349", 
+                               "Hispanic" = "#e06377"),
+                     breaks = c("White", "Black", "Hispanic")) +
+  theme_minimal() +
+  labs(color = "Race")
+```
+
+```{r}
+region_young <- young %>%
+  select(year, ne_2534:pacific_2534) %>%
+  rename(newengland = ne_2534,
+         mid_atlantic = ma_2534,
+         midwest = midwest_2534,
+         south = south_2534,
+         mountain = mountain_2534,
+         pacific = pacific_2534) %>%
+  mutate(newengland = newengland*100, mid_atlantic = mid_atlantic*100, midwest = midwest*100, south = south*100, mountain = mountain*100, pacific=pacific*100)
+         
+ggplot(region_young, aes(x = year, y = 100-newengland)) +          
+  geom_line(size = 1.25, aes(color = "New England")) +
+  geom_line(aes(y = 100-midwest, color = "Midwest"), size = 1.25) +   
+  geom_line(aes(y = 100-south, color = "South"), size = 1.25) + 
+  geom_line(aes(y = 100-pacific, color = "Pacific"), size = 1.25) + 
+  ylab("Share of Population that Has Ever Been Married") +
+  xlab("Year") +
+  scale_color_manual(values = c("New England" = "#411541", 
+                                "Midwest" = "#780775", 
+                                "South" = "#DE21D8",
+                                "Pacific" = "#E96DE5"),
+                     breaks = c("New England", "Midwest", "South", "Pacific")) +
+  theme_minimal() +
+  labs(color = "Region")
+```
+
+```{r}
+income_young <- young %>%
+  select(year, poor_2534, mid_2534, rich_2534) %>%
+  rename(poor = poor_2534,
+         middle = mid_2534,
+         rich = rich_2534) %>%
+  mutate(poor = poor*100, middle = middle*100, rich = rich*100)
+
+ggplot(income_young, aes(x = year, y = 100-poor)) +
+  geom_line(size = 1.25, aes(color = "Low Income")) +
+  geom_line(aes(y = 100-middle, color = "Middle Income"), size = 1.25) +
+  geom_line(aes(y = 100-rich, color = "High Income"), size = 1.25) +
+  ylab("Share of Population that Has Ever Been Married") +
+  xlab("Year") +
+  scale_color_manual(values = c("Low Income" = "#3D533C",
+                                "Middle Income" = "#57A054",
+                                "High Income" = "#96C195")) +
+  theme_minimal() +
+  labs(color = "Income")
+```
+
+```{r}
+kids_education <- data %>%
+  select(year, nokids_hs_2534, nokids_b_ap_2534, kids_hs_2534, kids_b_ap_2534) %>%
+  rename(nokids_hs = nokids_hs_2534,
+         kids_hs = kids_hs_2534,
+         nokids_college = nokids_b_ap_2534,
+         kids_college = kids_b_ap_2534) %>%
+  mutate(nokids_hs = nokids_hs*100, kids_hs = kids_hs*100, nokids_college = nokids_college*100, kids_college = kids_college*100)
+
+ggplot(kids, aes(x = year, y = 100-nokids_hs)) + 
+  geom_line(size = 1.25, aes(color = "No Kids - High School or Less")) +
+  geom_line(aes(y = 100-kids_hs, color = "Kids - High School or Less"), size = 1.25) +
+  geom_line(aes(y = 100-nokids_college, color = "No Kids - College Graduate or More"), size = 1.25) +
+  geom_line(aes(y = 100-kids_college, color = "Kids - College Graduate or More"), size = 1.25) +
+  theme_minimal() +
+  labs(color = "Kids and Education")
+```
+
+```{r}
+kids_income <- data %>%
+  select(year, nokids_poor_2534, nokids_rich_2534, kids_poor_2534, kids_rich_2534) %>%
+  rename(nokids_poor = nokids_poor_2534,
+         nokids_rich = nokids_rich_2534,
+         kids_poor = kids_poor_2534,
+         kids_rich = kids_rich_2534) %>%
+  mutate(nokids_poor = nokids_poor*100, nokids_rich = nokids_rich*100, kids_poor = kids_poor*100, kids_rich = kids_rich*100)
+```
+
+```{r}
+age_diff <- data %>%
+  select(year, all_2534, all_3544, all_4554) %>%
+  rename(young = all_2534,
+         middle = all_3544,
+         old = all_4554) %>%
+mutate(young = young*100, middle = middle*100, old = old*100)
+```
+
+
+```{r}
+all_data <- bind_cols(education_young, income_young, region_young, race_young, kids_income, kids_education, age_diff)
+all_data <- subset(all_data, select = -c(year1, year2, year3, year4, year5, year6))
+library(readr)
+write_rds(all_data, "all_data.rds")
+```
+
+```{r}
+data2 <- read.csv(text=getURL("https://raw.githubusercontent.com/fivethirtyeight/data/master/marriage/divorce.csv")) %>% clean_names()
+```
+
+```{r}
+education_divorce <- data2 %>%
+  select(year, hs_3544, sc_3544, b_ap_3544) %>%
+  rename(highschool = hs_3544,
+         somecollege = sc_3544,
+         collegegrad = b_ap_3544) %>%
+  mutate(highschool = highschool*100, somecollege = somecollege*100, collegegrad = collegegrad*100)
+
+ggplot(education_divorce, aes(x = year, y = highschool)) +
+  geom_line(size = 1.5, aes(color = "High School or Less")) +
+  geom_line(aes(y = somecollege, color = "Some College"), size = 1.5) +
+  geom_line(aes(y = collegegrad, color = "College Graduate or More"), size = 1.5) +
+    ylab("Share of Population that Has Is Currently Divorced") +
+  xlab("Year") +
+  scale_color_manual(values = c("High School or Less" = "#a167f7", 
+                                "Some College" = "#4741f4", 
+                                "College Graduate or More" = "#429ef4"),
+                     breaks = c("High School or Less", "Some College", "College Graduate or More")) +
+  theme_minimal() +
+  labs(color = "Education")
+```
+
