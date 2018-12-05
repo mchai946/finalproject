@@ -1,7 +1,7 @@
 # Marriage Trends from 1960-2012
 
 ### Topic
-I am looking at the decline in marriage in the United States from the time period 1960-2012.
+This project looks at the decline in marriage in the United States from the time period 1960-2012.
 
 ### Motivation
 It's often said that millenials have drastically different lifestyles than their parents and grandparents - more technology use, more money-driven, and more socially conscious. I wanted to see if these unconventional manners carried over into marriage, and how different factors, for instance, education or income level, affected an individual's decision to get married, and how these trends change over time.
