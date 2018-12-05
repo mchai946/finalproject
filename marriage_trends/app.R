@@ -38,7 +38,7 @@ ui <- navbarPage(
          plotOutput("distPlot"),
          h3("Notes:"),
          p("The graph shows the relevant share of the population that has ever been married (that is, the respondent is either currently married or was married in the past)."),
-         p("In terms of income, 'Low Income' represents respondents with family income in the lowest 25%, 'Middle Income' represents respondents with family income in the middle 50%, and 'High Income' represents those with family income in the top 25%."),
+         p("Regarding the income graph, 'Low Income' represents respondents with family income in the lowest 25%, 'Middle Income' represents respondents with family income in the middle 50%, and 'High Income' represents those with family income in the top 25%."),
          p("For the graphs that compare people with kids versus those with no kids, 'kids' means at least one own child living at home, whereas 'no kids' means no own children living at home.")
       )
    )
@@ -66,7 +66,9 @@ tabPanel("Divorce Trends",
       
       # Display plot
       mainPanel(
-        plotOutput("distPlot2")
+        plotOutput("distPlot2"),
+        h3("Notes:"),
+        p("Divorce means the respondent is currently divorced (conditional on having ever been married).")
       )
     )
   )
@@ -82,14 +84,14 @@ tabPanel("Analysis",
              mainPanel(
                h3("Summary of Findings"),
                h4("Marriage Trends:"),
-               p("Less educated young people (aged 25-34) are less likely to be married. In 1960, 89% of those with a high school education or less reported having been married. In 2012, 48% of that same demographic had ever been married."),
-               p("In terms of income, those that are low income saw the sharpest decline in marriage since 1960. In 1960, 86% of those that were low income had ever been married. In 2012, 35% of those people had ever been married. Middle income and high income people saw declines as well, although less drastically than low-income people."),
-               p("When considering race, Blacks see the greatest decline in marriage: 91% IN 2012 compared to 60% in 1960."),
-               p("The age graph shows that young people are delaying marriage. Those aged 25-34 are much less likely to be married than those aged 35 - 54. In 2012, Only 51% of young people have ever been married, whereas in 1960, the percentage was at 88."),
+               p("Less educated young people (aged 25-34) are less likely to be married. In 1960, 89% of those with a high school education or less reported having been married. In 2012, that same demographic reported 48%."),
+               p("Regarding income among young people, those that are low income saw the sharpest decline in marriage since 1960 (when compared to their richer counterparts). In 1960, 86% of those that were low income had ever been married. In 2012, 35% of those people had ever been married. Middle income and high income people saw declines as well, although less drastically than low-income people."),
+               p("When considering race (among young people), African-Americans see the greatest decline in marriage: 32% have been or were married in 2012 compared to 84% in 1960."),
+               p("The age graph shows that young people are delaying marriage. Those aged 25-34 are much less likely to be married than those aged 35 or above (unsuprisingly). In 2012, only 51% of young people have ever been married, whereas in 1960, the number was at 88%."),
                p("The kids vs. no kids graphs, for both education and income, showed that those with no kids (as in the respondents have none of their own children living at home) are much less likely to be married than those who have kids (at least one own child living at home)."),
                h4("Divorce Trends:"),
-               p("The education graphs show that those that are more educated are less likely to get divorced. For respondents in both the 35-44 and the 45-54 age categories, those with either some college education level or high school or less saw higher increases in divorce rates than their college-educated counterparts."),
-               p("The income graphs show that those of a low-income level are more likely to have been divorced, no matter what age. 33% of low-income 25-34 year olds reported having been divorced in 2012, versus 7% in 1960. This 26% increase is much greater than the 4% increase among high-income people: 6% in 2012 versus 2% in 1960. We see the same patterns among 35-44 year olds. 41% of low-income 35-44 year olds, repoted having been divorced in 2012, as opposed to 8% in 1960. Only 7% of high-income individuals reported having been divorced in 2012, versus 2% in 1960.")
+               p("The education graphs show that those that are more educated are less likely to get divorced. For respondents in both the 35-44 and the 45-54 age categories, those with either some college education level or high school or less saw much higher increases in divorce rates than their college-educated counterparts."),
+               p("The income graphs show that those of a low-income level are more likely to be divorced, no matter what age. 33% of low-income 25-34 year olds reported being divorced in 2012, versus 7% in 1960. This 26% increase is much greater than the 4% increase among high-income people: 6% in 2012 versus 2% in 1960. We see the same patterns among 35-44 year olds. 41% of low-income 35-44 year olds, reported being divorced in 2012, as opposed to 8% in 1960. Only 7% of high-income individuals reported being divorced in 2012, versus 2% in 1960.")
              )
            )
          )
@@ -275,7 +277,7 @@ server <- function(input, output) {
          geom_line(size = 1.5, aes(color = "High School or Less")) +
          geom_line(aes(y = somecollege, color = "Some College"), size = 1.5) +
          geom_line(aes(y = collegegrad, color = "College Graduate or More"), size = 1.5) +
-         ylab("Share of Population that Has Been Divorced") +
+         ylab("Share of Population that Has Been Divorced (%)") +
          xlab("Year") +
          scale_color_manual(values = c("High School or Less" = "#a167f7", 
                                        "Some College" = "#4741f4", 
@@ -296,11 +298,11 @@ server <- function(input, output) {
          geom_line(size = 1.5, aes(color = "High School or Less")) +
          geom_line(aes(y = somecollege2, color = "Some College"), size = 1.5) +
          geom_line(aes(y = collegegrad2, color = "College Graduate or More"), size = 1.5) +
-         ylab("Share of Population that Has Been Divorced") +
+         ylab("Share of Population that Has Been Divorced (%)") +
          xlab("Year") +
-         scale_color_manual(values = c("High School or Less" = "#0D1645", 
-                                       "Some College" = "#2845D7", 
-                                       "College Graduate or More" = "#7185EA"),
+         scale_color_manual(values = c("High School or Less" = "#411541", 
+                                       "Some College" = "#780775", 
+                                       "College Graduate or More" = "#DE21D8"),
                             breaks = c("High School or Less", "Some College", "College Graduate or More")) +
          theme_minimal() +
          labs(color = "Education",
@@ -317,7 +319,7 @@ server <- function(input, output) {
          geom_line(size = 1.5, aes(color = "Low Income")) +
          geom_line(aes(y = middle, color = "Middle Income"), size = 1.5) +
          geom_line(aes(y = rich, color = "High Income"), size = 1.5) +
-         ylab("Share of Population that Has Been Divorced") +
+         ylab("Share of Population that Has Been Divorced (%)") +
          xlab("Year") +
          scale_color_manual(values = c("Low Income" = "#3D533C",
                                        "Middle Income" = "#57A054",
@@ -338,7 +340,7 @@ server <- function(input, output) {
          geom_line(size = 1.5, aes(color = "Low Income")) +
          geom_line(aes(y = middle2, color = "Middle Income"), size = 1.5) +
          geom_line(aes(y = rich2, color = "High Income"), size = 1.5) +
-         ylab("Share of Population that Has Been Divorced") +
+         ylab("Share of Population that Has Been Divorced (%)") +
          xlab("Year") +
          scale_color_manual(values = c("Low Income" = "#C78500",
                                        "Middle Income" = "#F2BC50",
@@ -358,7 +360,7 @@ server <- function(input, output) {
          ggplot(aes(x = year, y = young)) +
          geom_line(size = 1.5, aes(color = "Ages 35-44")) +
          geom_line(aes(y = old, color = "Ages 45-54"), size = 1.5)  +
-         ylab("Share of Population that Has Been Divorced") +
+         ylab("Share of Population that Has Been Divorced (%)") +
          xlab("Year") +
          scale_color_manual(values = c("Ages 35-44" = "#E9496F",
                                        "Ages 45-54" = "#F7BFCC"),
