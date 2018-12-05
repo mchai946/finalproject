@@ -13,4 +13,6 @@ The data shows that today's young people (ages 25-34) are delaying marriage, and
 3. Individuals with kids (defined as having at least one child living at home) are nearly 4 times more likely to have been married than those without kids (defined as having none of their own children living at home).
 
 ### Shiny App
-Link
+https://maddie-chai.shinyapps.io/marriage_trends/
+
+Created by Maddie Chai, Gov 1005 Final Project, Harvard University 
