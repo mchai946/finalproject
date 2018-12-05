@@ -2,20 +2,30 @@
 
 library(shiny)
 library(tidyverse)
+library(leaflet)
+library(ggplot2)
+library(dplyr)
+library(readr)
 
 #Loading in data
-read_rds("all_data.rds")
-read_rds("all_data2.rds")
 
-# Define UI for application 
+all_data <- read_rds("all_data.rds")
+all_data2 <- read_rds("all_data2.rds")
+md <- read_rds("md.rds")
+
+# Define UI
+
 ui <- navbarPage(
   " ",
+  
+  #Creating three separate tabPanels for three separate pages
   
   tabPanel("Marriage Trends",
     
   fluidPage(
    
    # Application title
+    
    titlePanel("United States Marriage Trends from 1960-2012"),
    
    # Sidebar   
@@ -23,17 +33,22 @@ ui <- navbarPage(
      
      sidebarPanel(
        
-       #Creating drop-down menu so user can choose which demographic to look at
+       #Creating drop-down menu so user can choose which variable to look at
        
        selectInput(inputId = "choice", 
                    label = "Select a variable:",
                    choices = c("Education", "Region", "Income", "Race", "Age", 
                                "Kids vs. No Kids: Education", "Kids vs. no Kids: Income"),
                    selected = "Education"),
+      
+       #Creating slider input so user can choose date range and look more
+       #closely at trends
+       
       sliderInput("slider1", label = "Date Range:", 
                    min = 1960, max = 2012, value = c(1960, 2012), sep = "")),
    
-      # Display plot
+      # Display plot and notes under plot
+     
       mainPanel(
          plotOutput("distPlot"),
          h3("Notes:"),
@@ -44,17 +59,22 @@ ui <- navbarPage(
    )
 )
 ),
+
+#Creating new tabPanel for second page
+
 tabPanel("Divorce Trends", 
   fluidPage(
     
     # Application title
+    
     titlePanel("United States Divorce Trends from 1960-2012"),
     
-    # Sidebar   
+    # Sidebar
+    
     sidebarLayout(
       sidebarPanel(
         
-        #Creating drop-down menu so user can choose which demographic to look at
+        #Creating drop-down menu so user can choose which variable to look at
         
         selectInput(inputId = "choice2", 
                     label = "Select a variable:",
@@ -64,7 +84,8 @@ tabPanel("Divorce Trends",
         sliderInput("slider2", label = "Date Range:", 
                     min = 1960, max = 2012, value = c(1960, 2012), sep = "")),
       
-      # Display plot
+      # Display plot and notes
+      
       mainPanel(
         plotOutput("distPlot2"),
         h3("Notes:"),
@@ -73,6 +94,7 @@ tabPanel("Divorce Trends",
     )
   )
 ),
+
 tabPanel("Analysis", 
          fluidPage(
            
@@ -80,8 +102,11 @@ tabPanel("Analysis",
            titlePanel("Why is Marriage Declining and Divorce on the Rise?"),
            
 
-             # Display plot
-             mainPanel(
+             # Display plot, using splitLayout to plot two graphs side by side
+             # for more effect
+            
+            mainPanel(
+              splitLayout(cellWidths = c("50%", "50%"), plotOutput("marriagePlot"), plotOutput("divorcePlot")),
                h3("Summary of Findings"),
                h4("Marriage Trends:"),
                p("Less educated young people (aged 25-34) are less likely to be married. In 1960, 89% of those with a high school education or less reported having been married. In 2012, that same demographic reported 48%."),
@@ -101,12 +126,18 @@ tabPanel("Analysis",
 server <- function(input, output) {
   
   
-  #Showing plot based off of what the user chooses
+  #Showing plot based off of what the user chooses, each choice from the
+  #drop-down menu corresponds to a graph that has been manually made
   
    output$distPlot <- renderPlot({
 
      if (input$choice == "Education") {
        education_plot <- all_data %>%
+         
+         #Here, the filter command takes the user's input from the sliderInput
+         #and then sorts the data accordingly - doing the same process for all
+         #the other variables
+         
        filter(year >= input$slider1[1] & year <= input$slider1[2]) %>%
          ggplot(aes(x = year, y = 100-highschool)) +          
          geom_line(size = 1.5, aes(color = "High School or Less")) +
@@ -372,10 +403,43 @@ server <- function(input, output) {
          theme(text=element_text(family="Times New Roman", size=16))
        print(age_diff)
      }
+ 
+     #Creating plots for marriage and divorce trends
+     
+     output$marriagePlot <- renderPlot({
+      marriage <- md %>% 
+       ggplot(aes(x = year, y = marriage)) +
+         geom_line(aes(color = "Marriage"), size = 1.5) +
+         xlab("Year") +
+         ylab("Share of Relevant Population (%)") +
+         scale_color_manual(values = c("Marriage" = "#A61152")) +
+         theme_minimal() +
+         theme(legend.position = "none") +
+         labs(caption = "Data referring to those aged 35-44") +
+         ggtitle("MARRIAGE") +
+        theme(text=element_text(family="Times New Roman", size=16))
+      print(marriage)
+     })
+     
+     output$divorcePlot <- renderPlot({
+       divorce <- md %>% 
+         ggplot(aes(x = year, y = divorce)) +
+         geom_line(aes(color = "Divorce"), size = 1.5) +
+         xlab("Year") +
+         ylab("Share of Relevant Population (%)") +
+         scale_color_manual(values = c("Divorce" = "#F390BB")) +
+         theme_minimal() +
+         theme(legend.position = "none") +
+         labs(caption = "Data referring to those aged 35-44") +
+         ggtitle("DIVORCE") +
+         theme(text=element_text(family="Times New Roman", size=16))
+       print(divorce)
+     })
      
    })
 }
 
 # Run the application 
+
 shinyApp(ui = ui, server = server)
 
