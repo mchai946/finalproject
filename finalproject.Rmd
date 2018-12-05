@@ -184,3 +184,94 @@ ggplot(education_divorce, aes(x = year, y = highschool)) +
   labs(color = "Education")
 ```
 
+```{r}
+income_divorce <- data2 %>%
+  select(year, poor_3544, mid_3544, rich_3544) %>%
+  rename(poor = poor_3544,
+         middle = mid_3544,
+         rich = rich_3544) %>%
+  mutate(poor = poor*100, middle = middle*100, rich = rich*100)
+
+ggplot(income_divorce, aes(x = year, y = poor)) +
+  geom_line(size = 1.5, aes(color = "Low Income")) +
+  geom_line(aes(y = middle, color = "Middle Income"), size = 1.5) +
+  geom_line(aes(y = rich, color = "High Income"), size = 1.5) +
+    ylab("Share of Population that Has Is Currently Divorced") +
+  xlab("Year") +
+  scale_color_manual(values = c("Low Income" = "#3D533C",
+                                "Middle Income" = "#57A054",
+                                "High Income" = "#96C195"),
+                     breaks = c("Low Income", "Middle Income", "High Income")) +
+  theme_minimal() +
+  labs(color = "Income")
+```
+
+```{r}
+education_divorce2 <- data2 %>%
+    select(year, hs_4554, sc_4554, b_ap_4554) %>%
+  rename(highschool2 = hs_4554,
+         somecollege2 = sc_4554,
+         collegegrad2 = b_ap_4554) %>%
+  mutate(highschool2 = highschool2*100, somecollege2 = somecollege2*100, collegegrad2 = collegegrad2*100)
+
+ggplot(education_divorce2, aes(x = year, y = highschool2)) +
+  geom_line(size = 1.5, aes(color = "High School or Less")) +
+  geom_line(aes(y = somecollege2, color = "Some College"), size = 1.5) +
+  geom_line(aes(y = collegegrad2, color = "College Graduate or More"), size = 1.5) +
+    ylab("Share of Population that Has Is Currently Divorced") +
+  xlab("Year") +
+  scale_color_manual(values = c("High School or Less" = "#0D1645", 
+                                "Some College" = "#2845D7", 
+                                "College Graduate or More" = "#7185EA"),
+                     breaks = c("High School or Less", "Some College", "College Graduate or More")) +
+  theme_minimal() +
+  labs(color = "Education")
+```
+
+```{r}
+income_divorce2 <- data2 %>%
+    select(year, poor_4554, mid_4554, rich_4554) %>%
+  rename(poor2 = poor_4554,
+         middle2 = mid_4554,
+         rich2 = rich_4554) %>%
+  mutate(poor2 = poor2*100, middle2 = middle2*100, rich2 = rich2*100)
+
+ggplot(income_divorce2, aes(x = year, y = poor2)) +
+  geom_line(size = 1.5, aes(color = "Low Income")) +
+  geom_line(aes(y = middle2, color = "Middle Income"), size = 1.5) +
+  geom_line(aes(y = rich2, color = "High Income"), size = 1.5) +
+  ylab("Share of Population that Has Is Currently Divorced") +
+  xlab("Year") +
+  scale_color_manual(values = c("Low Income" = "#C78500",
+                                "Middle Income" = "#F2BC50",
+                                "High Income" = "#FDDEA0"),
+                     breaks = c("Low Income", "Middle Income", "High Income")) +
+  theme_minimal() +
+  labs(color = "Income")
+```
+
+```{r}
+age_comparison <- data2 %>%
+  select(year, all_3544, all_4554) %>%
+  rename(young = all_3544,
+         old = all_4554) %>%
+  mutate(young = young*100, old = old*100) 
+
+ggplot(age_comparison, aes(x = year, y = young)) +
+  geom_line(size = 1.5, aes(color = "Ages 35-44")) +
+  geom_line(aes(y = old, color = "Ages 45-54"), size = 1.5)  +
+  ylab("Share of Population that Has Is Currently Divorced") +
+  xlab("Year") +
+  scale_color_manual(values = c("Ages 35-44" = "#E9496F",
+                                "Ages 45-54" = "#F7BFCC"),
+                     breaks = c("Ages 35-44", "Ages 45-54")) +
+  theme_minimal() +
+  labs(color = "Income")
+```
+
+```{r}
+all_data2 <- bind_cols(education_divorce, education_divorce2, income_divorce, income_divorce2, age_comparison) 
+all_data2 <- subset(all_data2, select = -c(year1, year2, year3, year4))
+write_rds(all_data2, "all_data2.rds")
+```
+
