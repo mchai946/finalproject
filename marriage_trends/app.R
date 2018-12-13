@@ -13,13 +13,42 @@ all_data <- read_rds("all_data.rds")
 all_data2 <- read_rds("all_data2.rds")
 md <- read_rds("md.rds")
 
-# Define UI
+# Defining the UI Naming the navbarPage with a blank space because each page
+# already has a different title, and I didn't want to be repetitive
 
 ui <- navbarPage(
   " ",
   
-  #Creating three separate tabPanels for three separate pages
+  #Creating three separate tabPanels for three separate pages. There is probably
+  #a better way to make tabs, perhaps with fluidPage, but this is the way that
+  #made sense to me.
   
+  tabPanel("Analysis", 
+           fluidPage(
+             
+             # Application title
+             titlePanel("Why is Marriage Declining and Divorce on the Rise?"),
+             
+             
+             # Display plot, using splitLayout to plot two graphs side by side
+             # for more effect
+             
+             mainPanel(
+               splitLayout(cellWidths = c("50%", "50%"), plotOutput("marriagePlot"), plotOutput("divorcePlot")),
+               h3("Summary of Findings"),
+               h4("Marriage Trends:"),
+               p("Less educated young people (aged 25-34) are less likely to be married. In 1960, 89% of those with a high school education or less reported having been married. In 2012, that same demographic reported 48%."),
+               p("Regarding income among young people, those that are low income saw the sharpest decline in marriage since 1960 (when compared to their richer counterparts). In 1960, 86% of those that were low income had ever been married. In 2012, 35% of those people had ever been married. Middle income and high income people saw declines as well, although less drastically than low-income people."),
+               p("When considering race (among young people), African-Americans see the greatest decline in marriage: 32% have been or were married in 2012 compared to 84% in 1960."),
+               p("The age graph shows that young people are delaying marriage. Those aged 25-34 are much less likely to be married than those aged 35 or above (unsuprisingly). In 2012, only 51% of young people have ever been married, whereas in 1960, the number was at 88%."),
+               p("The kids vs. no kids graphs, for both education and income, showed that those with no kids (as in the respondents have none of their own children living at home) are much less likely to be married than those who have kids (at least one own child living at home)."),
+               h4("Divorce Trends:"),
+               p("The education graphs show that those that are more educated are less likely to get divorced. For respondents in both the 35-44 and the 45-54 age categories, those with either some college education level or high school or less saw much higher increases in divorce rates than their college-educated counterparts."),
+               p("The income graphs show that those of a low-income level are more likely to be divorced, no matter what age. 33% of low-income 25-34 year olds reported being divorced in 2012, versus 7% in 1960. This 26% increase is much greater than the 4% increase among high-income people: 6% in 2012 versus 2% in 1960. We see the same patterns among 35-44 year olds. 41% of low-income 35-44 year olds, reported being divorced in 2012, as opposed to 8% in 1960. Only 7% of high-income individuals reported being divorced in 2012, versus 2% in 1960.")
+             )
+           )
+  ),
+
   tabPanel("Marriage Trends",
     
   fluidPage(
@@ -28,7 +57,8 @@ ui <- navbarPage(
     
    titlePanel("United States Marriage Trends from 1960-2012"),
    
-   # Sidebar   
+   # Sidebar
+   
    sidebarLayout(
      
      sidebarPanel(
@@ -47,7 +77,7 @@ ui <- navbarPage(
       sliderInput("slider1", label = "Date Range:", 
                    min = 1960, max = 2012, value = c(1960, 2012), sep = "")),
    
-      # Display plot and notes under plot
+      # Displaying plot and notes under plot
      
       mainPanel(
          plotOutput("distPlot"),
@@ -63,6 +93,7 @@ ui <- navbarPage(
 #Creating new tabPanel for second page
 
 tabPanel("Divorce Trends", 
+         
   fluidPage(
     
     # Application title
@@ -72,6 +103,7 @@ tabPanel("Divorce Trends",
     # Sidebar
     
     sidebarLayout(
+      
       sidebarPanel(
         
         #Creating drop-down menu so user can choose which variable to look at
@@ -84,7 +116,7 @@ tabPanel("Divorce Trends",
         sliderInput("slider2", label = "Date Range:", 
                     min = 1960, max = 2012, value = c(1960, 2012), sep = "")),
       
-      # Display plot and notes
+      # Display plot and notes under the plot
       
       mainPanel(
         plotOutput("distPlot2"),
@@ -93,34 +125,7 @@ tabPanel("Divorce Trends",
       )
     )
   )
-),
-
-tabPanel("Analysis", 
-         fluidPage(
-           
-           # Application title
-           titlePanel("Why is Marriage Declining and Divorce on the Rise?"),
-           
-
-             # Display plot, using splitLayout to plot two graphs side by side
-             # for more effect
-            
-            mainPanel(
-              splitLayout(cellWidths = c("50%", "50%"), plotOutput("marriagePlot"), plotOutput("divorcePlot")),
-               h3("Summary of Findings"),
-               h4("Marriage Trends:"),
-               p("Less educated young people (aged 25-34) are less likely to be married. In 1960, 89% of those with a high school education or less reported having been married. In 2012, that same demographic reported 48%."),
-               p("Regarding income among young people, those that are low income saw the sharpest decline in marriage since 1960 (when compared to their richer counterparts). In 1960, 86% of those that were low income had ever been married. In 2012, 35% of those people had ever been married. Middle income and high income people saw declines as well, although less drastically than low-income people."),
-               p("When considering race (among young people), African-Americans see the greatest decline in marriage: 32% have been or were married in 2012 compared to 84% in 1960."),
-               p("The age graph shows that young people are delaying marriage. Those aged 25-34 are much less likely to be married than those aged 35 or above (unsuprisingly). In 2012, only 51% of young people have ever been married, whereas in 1960, the number was at 88%."),
-               p("The kids vs. no kids graphs, for both education and income, showed that those with no kids (as in the respondents have none of their own children living at home) are much less likely to be married than those who have kids (at least one own child living at home)."),
-               h4("Divorce Trends:"),
-               p("The education graphs show that those that are more educated are less likely to get divorced. For respondents in both the 35-44 and the 45-54 age categories, those with either some college education level or high school or less saw much higher increases in divorce rates than their college-educated counterparts."),
-               p("The income graphs show that those of a low-income level are more likely to be divorced, no matter what age. 33% of low-income 25-34 year olds reported being divorced in 2012, versus 7% in 1960. This 26% increase is much greater than the 4% increase among high-income people: 6% in 2012 versus 2% in 1960. We see the same patterns among 35-44 year olds. 41% of low-income 35-44 year olds, reported being divorced in 2012, as opposed to 8% in 1960. Only 7% of high-income individuals reported being divorced in 2012, versus 2% in 1960.")
-             )
-           )
-         )
-)
+))
 
 # Define server logic 
 server <- function(input, output) {
@@ -436,10 +441,10 @@ server <- function(input, output) {
        print(divorce)
      })
      
-   })
+})
 }
 
 # Run the application 
 
-shinyApp(ui = ui, server = server)
+shinyApp(ui = ui, server = server) 
 
