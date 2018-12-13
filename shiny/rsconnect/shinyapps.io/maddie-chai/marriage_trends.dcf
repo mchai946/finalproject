@@ -1,0 +1,12 @@
+name: marriage_trends
+title: marriage_trends
+username:
+account: maddie-chai
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 605099
+bundleId: 1761381
+url: https://maddie-chai.shinyapps.io/marriage_trends/
+when: 1544722938.55506
+asMultiple: FALSE
+asStatic: FALSE
