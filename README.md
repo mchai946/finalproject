@@ -8,9 +8,9 @@ I took my data from a [FiveThirty Eight article](https://fivethirtyeight.com/fea
 
 ### Summary
 The data shows that today's young people (ages 25-34) are delaying marriage, and sometimes not getting married at all, when compared to those in the 20th century. All the data showed declines in the percentage of those who have ever been married, but there are three main findings about young people I find particularly interesting.
-1. Americans with that are high school-educated or less are seeing the sharpest decline in marriage (when compared to those that have some college education or more). 
-2. Given the most recent data, Americans with a high school degree or less are nearly five times more likely to be divorced than college-educated Americans (33% of those with a high school degree or less reported being divorced, versus 7% of college-educated Americans).
-3. Individuals with kids (defined as having at least one child living at home) are nearly 4 times more likely to have been married than those without kids (defined as having none of their own children living at home).
+1. Less educated Americans are less likely to be married, and when they do get married, they're more likely to get divorced than their better-educated counterparts.
+2. Working women are less likely to be married than their unemployed counterparts, while the reverse is true for men.
+3. Individuals with kids are nearly 4 times more likely to have been married than those without kids.
 
 ### Shiny App
 https://maddie-chai.shinyapps.io/marriage_trends/
