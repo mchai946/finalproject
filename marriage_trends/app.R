@@ -14,7 +14,7 @@ all_data2 <- read_rds("all_data2.rds")
 md <- read_rds("md.rds")
 men_women <- read_rds("men_women.rds")
 
-# Defining the UI Naming the navbarPage with a blank space because each page
+# Defining the UI. Naming the navbarPage with a blank space because each page
 # already has a different title, and I didn't want to be repetitive
 
 ui <- navbarPage(
