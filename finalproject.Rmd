@@ -5,22 +5,34 @@ date: "10/18/2018"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+#Loading libraries
+
 require(RCurl)
 library(tidyverse)
 library(ggplot2)
 library(janitor)
 library(dplyr)
 library(readr)
+
+#Reading in FiveThirtyEight data directly from the web
+
 data <- read.csv(text=getURL("https://raw.githubusercontent.com/fivethirtyeight/data/master/marriage/both_sexes.csv")) %>% clean_names()
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
 young <- data %>%
   select(x:rich_2534)
 
-  #Taking only the variables the concern the 25-34 age demographic
+  #Taking only the variables the concern the 25-34 age demographic and making a
+  #new dataset. This will be helpful in the future since I will be looking at
+  #different ages, and I can take directly from this 'young' dataset when I want
+  #to look at ages 25-34. Renaming variables for clarity, and turning variables
+  #into percentages so they're easier to plot.
+
+  #EDUCATION
 
 education_young <- young %>%
   select(year, hs_2534:b_ap_2534) %>%
@@ -29,12 +41,18 @@ education_young <- young %>%
          college_grad = b_ap_2534) %>%
   mutate(highschool = highschool*100, some_college = some_college*100, college_grad = college_grad*100) 
 
-ggplot(education_young, aes(x = year, y = 100-highschool)) +          #High school or less
+ggplot(education_young, aes(x = year, y = 100-highschool)) +
+  
+  #Adding multiple geom_lines for comparison on the graph
+  
   geom_line(size = 1.25, aes(color = "High School or Less")) +
-  geom_line(aes(y = 100-some_college, color = "Some College"), size = 1.25) +    #Some college
-  geom_line(aes(y = 100-college_grad, color = "College Graduate or More"), size = 1.25) +    #College grad or more
+  geom_line(aes(y = 100-some_college, color = "Some College"), size = 1.25) +     college
+  geom_line(aes(y = 100-college_grad, color = "College Graduate or More"), size = 1.25) +   
   ylab("Share of Population that Has Ever Been Married") +
   xlab("Year") +
+    
+   #Manually adding colors for aesthetic purposes
+    
   scale_color_manual(values = c("High School or Less" = "#a167f7", 
                                 "Some College" = "#4741f4", 
                                 "College Graduate or More" = "#429ef4"),
@@ -43,18 +61,28 @@ ggplot(education_young, aes(x = year, y = 100-highschool)) +          #High scho
   labs(color = "Education") 
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
 race_young <- young %>%
   select(year, white_2534:hisp_2534) %>%
+  
+  #RACE
+  
+  #We now do the same thing for each variable that we did for education: take
+  #the variables form the 'young' dataset, rename variables for clarity, and
+  #multiply by 100 for  graphing purposes.
+  
   rename(white = white_2534,
          black = black_2534,
          hispanic = hisp_2534) %>%
   mutate(white = white*100, black = black*100, hispanic = hispanic*100)
 
-ggplot(race_young, aes(x = year, y = 100-white)) +          #Whites
+  #We also do the same thing with the ggplots: plotting multiple geom_lines, and
+  #setting the color as the variable name so it appears in the legend.
+
+ggplot(race_young, aes(x = year, y = 100-white)) +      
   geom_line(size = 1.25, aes(color = "White")) +
-  geom_line(aes(y = 100-black, color = "Black"), size = 1.25) +    #Blacks
-  geom_line(aes(y = 100-hispanic, color = "Hispanic"), size = 1.25) +    #Hispanics
+  geom_line(aes(y = 100-black, color = "Black"), size = 1.25) +    
+  geom_line(aes(y = 100-hispanic, color = "Hispanic"), size = 1.25) +   
   ylab("Share of Population that Has Ever Been Married") +
   xlab("Year") +
   scale_color_manual(values = c("White" = "#eeac99", 
@@ -65,7 +93,10 @@ ggplot(race_young, aes(x = year, y = 100-white)) +          #Whites
   labs(color = "Race")
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+
+#REGION
+
 region_young <- young %>%
   select(year, ne_2534:pacific_2534) %>%
   rename(newengland = ne_2534,
@@ -77,22 +108,25 @@ region_young <- young %>%
   mutate(newengland = newengland*100, mid_atlantic = mid_atlantic*100, midwest = midwest*100, south = south*100, mountain = mountain*100, pacific=pacific*100)
          
 ggplot(region_young, aes(x = year, y = 100-newengland)) +          
-  geom_line(size = 1.25, aes(color = "New England")) +
-  geom_line(aes(y = 100-midwest, color = "Midwest"), size = 1.25) +   
-  geom_line(aes(y = 100-south, color = "South"), size = 1.25) + 
-  geom_line(aes(y = 100-pacific, color = "Pacific"), size = 1.25) + 
+  geom_line(size = 1.25, aes(color = "newengland")) +
+  geom_line(aes(y = 100-midwest, color = "midwest"), size = 1.25) +   
+  geom_line(aes(y = 100-south, color = "south"), size = 1.25) + 
+  geom_line(aes(y = 100-pacific, color = "pacific"), size = 1.25) + 
   ylab("Share of Population that Has Ever Been Married") +
   xlab("Year") +
-  scale_color_manual(values = c("New England" = "#411541", 
-                                "Midwest" = "#780775", 
-                                "South" = "#DE21D8",
-                                "Pacific" = "#E96DE5"),
-                     breaks = c("New England", "Midwest", "South", "Pacific")) +
+  scale_color_manual(values = c("newengland" = "#411541", 
+                                "midwest" = "#780775", 
+                                "south" = "#DE21D8",
+                                "pacific" = "#E96DE5"),
+                     breaks = c("newengland", "midwest", "south", "pacific")) +
   theme_minimal() +
   labs(color = "Region")
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+
+#INCOME
+
 income_young <- young %>%
   select(year, poor_2534, mid_2534, rich_2534) %>%
   rename(poor = poor_2534,
@@ -113,7 +147,14 @@ ggplot(income_young, aes(x = year, y = 100-poor)) +
   labs(color = "Income")
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+
+#We are now taking data from our original dataset, since we're looking at
+#different age ranges. Here I go through the same process: selecting the
+#necessary variables, renaming them, and multiplying by 100.
+
+#KIDS VS. NO KIDS: EDUCATION
+
 kids_education <- data %>%
   select(year, nokids_hs_2534, nokids_b_ap_2534, kids_hs_2534, kids_b_ap_2534) %>%
   rename(nokids_hs = nokids_hs_2534,
@@ -122,7 +163,7 @@ kids_education <- data %>%
          kids_college = kids_b_ap_2534) %>%
   mutate(nokids_hs = nokids_hs*100, kids_hs = kids_hs*100, nokids_college = nokids_college*100, kids_college = kids_college*100)
 
-ggplot(kids, aes(x = year, y = 100-nokids_hs)) + 
+ggplot(kids_education, aes(x = year, y = 100-nokids_hs)) + 
   geom_line(size = 1.25, aes(color = "No Kids - High School or Less")) +
   geom_line(aes(y = 100-kids_hs, color = "Kids - High School or Less"), size = 1.25) +
   geom_line(aes(y = 100-nokids_college, color = "No Kids - College Graduate or More"), size = 1.25) +
@@ -131,7 +172,10 @@ ggplot(kids, aes(x = year, y = 100-nokids_hs)) +
   labs(color = "Kids and Education")
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+
+#KIDS VS. NO KIDS: INCOME
+
 kids_income <- data %>%
   select(year, nokids_poor_2534, nokids_rich_2534, kids_poor_2534, kids_rich_2534) %>%
   rename(nokids_poor = nokids_poor_2534,
@@ -141,7 +185,10 @@ kids_income <- data %>%
   mutate(nokids_poor = nokids_poor*100, nokids_rich = nokids_rich*100, kids_poor = kids_poor*100, kids_rich = kids_rich*100)
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+
+#AGE
+
 age_diff <- data %>%
   select(year, all_2534, all_3544, all_4554) %>%
   rename(young = all_2534,
@@ -150,19 +197,34 @@ age_diff <- data %>%
 mutate(young = young*100, middle = middle*100, old = old*100)
 ```
 
+```{r,  echo = FALSE, message = FALSE}
 
-```{r}
+#Time for the fun part! Combining all our data into one big dataset so it's
+#ready for my app. Here we use bind_cols() since we are combining multiple
+#different columns. All these datasets have 'year' as a common variable, I
+#couldn't get that to work in the bind_cols() function so I just manually
+#removed the duplicates after.
+
 all_data <- bind_cols(education_young, income_young, region_young, race_young, kids_income, kids_education, age_diff)
 all_data <- subset(all_data, select = -c(year1, year2, year3, year4, year5, year6))
-library(readr)
 write_rds(all_data, "all_data.rds")
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+#Reading in the second dataset from FiveThirtyEight so we can make our divorce
+#graphs.
+
 data2 <- read.csv(text=getURL("https://raw.githubusercontent.com/fivethirtyeight/data/master/marriage/divorce.csv")) %>% clean_names()
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+#Going through the same process that we did for the marriage dataset, although
+#this dataset only had data for those aged 35-44 and 45-54, which makes sense
+#since I doubt many 25-34 year olds are divorced, compared to those 35 and
+#older.
+
+#EDUCATION: AGES 35-44
+
 education_divorce <- data2 %>%
   select(year, hs_3544, sc_3544, b_ap_3544) %>%
   rename(highschool = hs_3544,
@@ -184,7 +246,10 @@ ggplot(education_divorce, aes(x = year, y = highschool)) +
   labs(color = "Education")
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+
+#INCOME: AGES 35-44
+
 income_divorce <- data2 %>%
   select(year, poor_3544, mid_3544, rich_3544) %>%
   rename(poor = poor_3544,
@@ -206,7 +271,10 @@ ggplot(income_divorce, aes(x = year, y = poor)) +
   labs(color = "Income")
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+
+#EDUCATION: AGES 45-54
+
 education_divorce2 <- data2 %>%
     select(year, hs_4554, sc_4554, b_ap_4554) %>%
   rename(highschool2 = hs_4554,
@@ -228,7 +296,10 @@ ggplot(education_divorce2, aes(x = year, y = highschool2)) +
   labs(color = "Education")
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+
+#INCOME: AGES 45-54
+
 income_divorce2 <- data2 %>%
     select(year, poor_4554, mid_4554, rich_4554) %>%
   rename(poor2 = poor_4554,
@@ -250,7 +321,10 @@ ggplot(income_divorce2, aes(x = year, y = poor2)) +
   labs(color = "Income")
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+
+#AGE COMPARISON: AGES 35-44 VS. 45-54
+
 age_comparison <- data2 %>%
   select(year, all_3544, all_4554) %>%
   rename(young = all_3544,
@@ -269,9 +343,132 @@ ggplot(age_comparison, aes(x = year, y = young)) +
   labs(color = "Income")
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+#Comining all data for the divorce graphs! Here we do the same process that we did for all_data.
+
 all_data2 <- bind_cols(education_divorce, education_divorce2, income_divorce, income_divorce2, age_comparison) 
 all_data2 <- subset(all_data2, select = -c(year1, year2, year3, year4))
 write_rds(all_data2, "all_data2.rds")
+```
+
+```{r, echo = FALSE, message = FALSE}
+
+#Here is my start of an attempt to prep data for a map. Just keeping it here in
+#case I want to ever try again.
+
+by_region <- data %>%
+  select(year, ne_2534, ma_2534, midwest_2534, south_2534, mountain_2534, pacific_2534) %>%
+  rename(newengland = ne_2534,
+         midatlantic = ma_2534,
+         midwest = midwest_2534,
+         south = south_2534,
+         mountain = mountain_2534,
+         pacific = pacific_2534) %>%
+  mutate(newengland = 100 - 100*newengland, 
+         midatlantic = 100 - 100*midatlantic, 
+         midwest = 100 - 100*midwest,
+         south = 100 - 100*south,
+         mountain = 100 - 100*mountain,
+         pacific = 100 - 100*pacific)
+
+
+by_region[,-1] <-round(by_region[,-1],1)
+write_rds(by_region, "by_region.rds")
+```
+
+```{r, echo = FALSE, message = FALSE}
+
+#Creating graphs for the 'Analysis' tab.
+
+marriage <- data %>%
+  select(year, all_3544) %>%
+  rename(marriage = all_3544) %>%
+  mutate(marriage = 100 - marriage*100)
+
+divorce <- data2 %>%
+  select(year, all_3544) %>%
+  rename(divorce = all_3544) %>%
+  mutate(divorce =divorce*100)
+
+md <- bind_cols(marriage, divorce)
+md <- subset(md, select = -c(year1))
+write_rds(md, "md.rds")
+
+ggplot(md, aes(x = year, y = marriage)) +
+  geom_line(aes(color = "Marriage"), size = 1.5) +
+  xlab("Year") +
+  ylab("Share of Relevant Population (%)") +
+  scale_color_manual(values = c("Marriage" = "#A61152")) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  ggtitle("MARRIAGE")
+
+ggplot(md, aes(x = year, y = divorce)) +
+  geom_line(aes(color = "Divorce"), size = 1.5) +
+  xlab("Year") +
+  ylab("Share of Relevant Population (%)") +
+  scale_color_manual(values = c("Divorce" = "#F390BB")) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  ggtitle("DIVORCE")
+```
+
+```{r, echo = FALSE, message = FALSE}
+
+#More code I wrote for my map. Still keeping it here in case I ever want to try
+#again.
+
+map_prep <- states %>%
+  mutate(region2 = 0) %>%
+  mutate(region2 = case_when(region == "alabama" ~ "south",
+                             region == "georgia" ~ "south",
+                             region == "florida" ~ "south",
+                             region == "south carolina" ~ "south",
+                             region == "mississippi" ~ "south",
+                             region == "louisiana" ~ "south",
+                             region == "arksansas" ~ "south",
+                             region == "tennessee" ~ "south",
+                             region == "kentucky" ~ "south",
+                             region == "west virginia" ~ "south",
+                             region == "arkansas" ~ "south",
+                             region == "ohio" ~ "midwest",
+                             region == "indiana" ~ "midwest",
+                             region == "michigan" ~ "midwest",
+                             region == "illinois" ~ "midwest",
+                             region == "wisconsin" ~ "midwest",
+                             region == "missouri" ~ "midwest",
+                             region == "iowa" ~ "midwest",
+                             region == "minnesota" ~ "midwest",
+                             region == "kansas" ~ "midwest",
+                             region == "nebraska" ~ "midwest",
+                             region == "south dakota" ~ "midwest",
+                             region == "north dakota" ~ "midwest",
+                             region == "oklahoma" ~ "midwest",
+                             region == "connecticut" ~ "newengland",
+                             region == "maine" ~ "newengland",
+                             region == "massachusetts" ~ "newengland",
+                             region == "new hampshire" ~ "newengland",
+                             region == "rhode island" ~ "newengland",
+                             region == "vermont" ~ "newengland",
+                             region == "maryland" ~ "midatlantic",
+                             region == "delaware" ~ "midatlantic",
+                             region == "pennsylvania" ~ "midatlantic",
+                             region == "district of columbia" ~ "midatlantic",
+                             region == "virginia" ~ "midatlantic",
+                             region == "new jersey" ~ "midatlantic",
+                             region == "new york" ~ "midatlantic",
+                             region == "north carolina" ~ "midatlantic",
+                             region == "montana" ~ "mountain",
+                             region == "idaho" ~ "mountain",
+                             region == "wyoming" ~ "mountain",
+                             region == "colorado" ~ "mountain",
+                             region == "utah" ~ "mountain",
+                             region == "nevada" ~ "mountain",
+                             region == "texas" ~ "mountain",
+                             region == "washington" ~ "pacific",
+                             region == "oregon" ~ "pacific",
+                             region == "california" ~ "pacific",
+                             region == "new mexico" ~ "pacific",
+                             region == "arizona" ~ "pacific")) 
 ```
 
