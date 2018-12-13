@@ -357,6 +357,11 @@ server <- function(input, output) {
      }
    })
    
+   #Making all the graphs for the second tab. This is able to be accessed in the
+   #ui by  matching the internal label "choice2" and input$choice2. The if's and
+   #else if's correspond to different choices in the ui. Same sliderInput as
+   #before.
+   
    output$distPlot2 <- renderPlot({
      
      if (input$choice2 == "Education: Ages 35-44") {
@@ -461,6 +466,10 @@ server <- function(input, output) {
          theme(text=element_text(family="Times New Roman", size=16))
        print(age_diff)
      }
+     
+     #Making all the graphs for the third tab, input$choice3 corresponds to
+     #"choice3" as an internal label in the ui. Same sliderInput as the two
+     #other tabs.
      
      output$distPlot4 <- renderPlot({
      
