@@ -90,7 +90,7 @@ ui <- navbarPage(
 )
 ),
 
-#Creating new tabPanel for second page
+#Creating new tabPanel for page
 
 tabPanel("Divorce Trends", 
          
@@ -132,7 +132,8 @@ server <- function(input, output) {
   
   
   #Showing plot based off of what the user chooses, each choice from the
-  #drop-down menu corresponds to a graph that has been manually made
+  #drop-down menu corresponds to a graph that has been manually made in my rmd
+  #file
   
    output$distPlot <- renderPlot({
 
