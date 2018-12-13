@@ -32,7 +32,7 @@ ui <- navbarPage(
              
              
              # Display plot, using splitLayout to plot two graphs side by side
-             # for more effect
+             # for better comparison effect
              
              mainPanel(
                splitLayout(cellWidths = c("50%", "50%"), plotOutput("marriagePlot"), plotOutput("divorcePlot")),
