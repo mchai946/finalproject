@@ -472,3 +472,95 @@ map_prep <- states %>%
                              region == "arizona" ~ "pacific")) 
 ```
 
+```{r, echo = FALSE, message = FALSE}
+
+#Reading in data so we can compare men vs. women
+
+men <- read.csv(text=getURL("https://raw.githubusercontent.com/fivethirtyeight/data/master/marriage/men.csv")) %>% clean_names()
+women <- read.csv(text =getURL("https://raw.githubusercontent.com/fivethirtyeight/data/master/marriage/women.csv")) %>% clean_names()
+```
+
+```{r, echo = FALSE, message = FALSE}
+#I want  to look at how men and women compare based on whether or not they have jobs.
+
+working_men <- men %>%
+  select(year, work_hs_2534, work_sc_2534, work_b_ap_2534) %>%
+  mutate(work_hs_2534 = work_hs_2534*100,
+         work_sc_2534 = work_sc_2534*100,
+         work_b_ap_2534 = work_b_ap_2534*100)
+
+working_women <- women %>%
+  select(year, work_hs_2534, work_sc_2534, work_b_ap_2534) %>%
+  rename(work_hs_2534_women = work_hs_2534,
+         work_sc_2534_women = work_sc_2534,
+         work_b_ap_2534_women = work_b_ap_2534) %>%
+  mutate(work_hs_2534_women = work_hs_2534_women*100,
+         work_sc_2534_women = work_sc_2534_women*100,
+         work_b_ap_2534_women = work_b_ap_2534_women*100)
+```
+
+```{r, echo = FALSE, message = FALSE}
+#Looking at working men and women by race.
+
+working_men_byrace <- men %>%
+  select(year, work_white_2534, work_black_2534, work_hisp_2534) %>%
+  mutate(work_white_2534 = work_white_2534*100,
+         work_black_2534 = work_black_2534*100,
+         work_hisp_2534 = work_hisp_2534*100)
+
+working_women_byrace <- women %>%
+  select(year, work_white_2534, work_black_2534, work_hisp_2534) %>%
+  rename(work_white_2534_women = work_white_2534,
+        work_black_2534_women = work_black_2534,
+        work_hisp_2534_women = work_hisp_2534) %>%
+  mutate(work_white_2534_women = work_white_2534_women*100,
+         work_black_2534_women = work_black_2534_women*100,
+         work_hisp_2534_women = work_hisp_2534_women*100)
+```
+
+```{r, echo = FALSE, message = FALSE}
+#Looking at non-working men and women by race.
+
+no_work_men_race <- men %>%
+  select(year, nowork_white_2534, nowork_black_2534, nowork_hisp_2534) %>%
+  mutate(nowork_white_2534 = nowork_white_2534*100,
+         nowork_black_2534 = nowork_black_2534*100,
+         nowork_hisp_2534 = nowork_hisp_2534*100)
+
+no_work_women_race <- women %>%
+  select(year, nowork_white_2534, nowork_black_2534, nowork_hisp_2534) %>%
+  rename(nowork_white_2534_women = nowork_white_2534,
+         nowork_black_2534_women = nowork_black_2534,
+         nowork_hisp_2534_women = nowork_hisp_2534) %>%
+  mutate(nowork_white_2534_women = nowork_white_2534_women*100,
+         nowork_black_2534_women = nowork_black_2534_women*100,
+         nowork_hisp_2534_women = nowork_hisp_2534_women*100)
+```
+
+```{r, echo = FALSE, message = FALSE}
+#Comparing women and men with kids vs. no kids
+
+women_kids <- women %>%
+  select(year, kids_all_2534, nokids_all_2534) %>%
+  rename(kids_women = kids_all_2534,
+         nokids_women = nokids_all_2534) %>%
+  mutate(kids_women = kids_women*100,
+         nokids_women = nokids_women*100)
+
+men_kids <- men %>%
+  select(year, kids_all_2534, nokids_all_2534) %>%
+  rename(kids = kids_all_2534,
+         nokids = nokids_all_2534) %>%
+  mutate(kids = kids*100,
+         nokids = nokids*100)
+```
+
+```{r,  echo = FALSE, message = FALSE}
+#Time to combine all the men and women data into one dataset and prep it for the
+#app
+
+men_women <- bind_cols(working_men, working_women, working_men_byrace, working_women_byrace, no_work_men_race, no_work_women_race, women_kids, men_kids)
+men_women <- subset(men_women, select = -c(year1, year2, year3, year4, year5, year6, year7))
+write_rds(men_women, "men_women.rds")
+```
+
